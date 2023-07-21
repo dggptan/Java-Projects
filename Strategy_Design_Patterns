@@ -1,1 +1,137 @@
+/*Placing an order on e-commerce platform by
+adding item to the shopping cart
+and making payment*/
+
+//create an inerface
+package controller;
+
+public interface Payment {
+    public void pay(int amount);
+}
+
+
+//Payment method to be used
+package controller;
+public class CreditCardAlgorithm implements Payment {
+    private String name;
+    private String cardNumber;
+
+    public CreditCardAlgorithm(String name, String cardNumber){
+        this.name = name;
+        this.cardNumber = cardNumber;
+    }
+
+    @Override
+    public void pay(int amount) {
+        System.out.println(amount + " paid with Credit Card");
+    }
+}
+
+
+package controller;
+public class PaypalAlgorithm implements Payment {
+    private String email;
+    private String password;
+
+    public PaypalAlgorithm(String email, String password){
+        this.email = email;
+        this.password = password;
+    }
+
+    @Override
+    public void pay(int amount) {
+        System.out.println(amount + " paid with PayPal");
+    }
+}
+
+//product to be purchased
+package model;
+
+public class Product {
+    private String upcCode;
+    private int price;
+
+    public Product(String upcCode, int price){
+        this.upcCode = upcCode;
+        this.price = price;
+    }
+
+    public String getUpcCode(){
+        return upcCode;
+    }
+
+    public void setUpcCode(String upcCode){
+        this.upcCode = upcCode;
+    }
+
+    public int getPrice(){
+        return price;
+    }
+
+    public void setPrice(int price){
+        this.price = price;
+    }
+}
+
+
+//shopping cart
+package model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import controller.Payment;
+
+public class ShoppingCart {
+    List<Product> productList;
+
+    public ShoppingCart(){
+        this.productList = new ArrayList<>();
+    }
+    public void addProduct(Product product){
+        productList.add(product);
+    }
+
+    public void removeProduct(Product product){
+        productList.remove(product);
+    }
+
+    public int calculateTotal(){
+        int sum = 0;
+        for(Product product : productList){
+            sum += product.getPrice();
+        }
+        return sum;
+    }
+
+    public void pay(Payment paymentStrategy){
+        int amount = calculateTotal();
+        paymentStrategy.pay(amount);
+    }
+
+}
+
+
+//main method to combine all the classes
+package model;
+
+import controller.CreditCardAlgorithm;
+import controller.PaypalAlgorithm;
+
+public class main {
+    public static void main(String[] args) {
+        ShoppingCart cart = new ShoppingCart();
+
+        Product pants = new Product("123", 25);
+        Product shirts = new Product("567", 20);
+
+        cart.addProduct(shirts);
+        cart.addProduct(pants);
+    
+     //payment decisions
+     cart.pay(new CreditCardAlgorithm("Paulo", "1247442845"));
+     cart.pay(new PaypalAlgorithm("paulo@gmail.com", "vsvfgusg"));
+    }
+
+}
 
